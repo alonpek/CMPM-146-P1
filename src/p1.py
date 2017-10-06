@@ -2,6 +2,8 @@ from p1_support import load_level, show_level, save_level_costs
 from math import inf, sqrt
 from heapq import heappop, heappush
 import os
+from math import sqrt
+import sys
 
 def dijkstras_shortest_path(initial_position, destination, graph, adj):
     print(initial_position)
@@ -10,8 +12,59 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     adj_list = adj(graph, initial_position)
     print(adj_list)
 
+    # “dist = {}” and “dist[state] = better_distance” dist from src to the node
+    # “prev = {}” and “prev[state2] = state1”
+
     dist = {}
     prev = {}
+    queue = []
+
+    dist[initial_position] = 0
+    heappush(queue, (0, initial_position))
+
+    while len(queue) != 0:
+        cur_cell = heappop(queue)[1] # pop cell that has the shortest distance
+        print(cur_cell)
+        adj_list = adj(graph, cur_cell)
+        print(adj_list)
+        print(len(adj_list))
+        for elem in adj_list:
+            print(elem)
+            #sys.exit(0)
+            neighbor_cell = elem[0]
+            print(neighbor_cell)
+            if neighbor_cell[0] > 100:
+                sys.exit(0)
+            neighbor_weight = elem[1]
+            print(neighbor_weight)
+            #sys.exit(0)
+            # calculate Euclidean distances
+            if (neighbor_cell[0] == cur_cell[0] and neighbor_cell[1] != cur_cell[1]) or \
+                    (neighbor_cell[0] != cur_cell[0] and neighbor_cell[1] == cur_cell[1]):
+                comb_weight = (dist[cur_cell] + neighbor_weight) / 2
+            else:
+                comb_weight = sqrt(dist[cur_cell] + neighbor_weight) / 2
+
+            print(comb_weight)
+
+
+            if (neighbor_cell not in dist) or (comb_weight < dist[neighbor_cell]):
+                dist[neighbor_cell] = comb_weight
+                prev[neighbor_cell] = cur_cell
+                heappush(queue, (comb_weight, neighbor_cell))
+                print(dist[neighbor_cell])
+
+    print(dist)
+    print(prev)
+    sys.exit(0)
+
+
+
+
+
+
+
+
 
     """ Searches for a minimal cost path through a graph using Dijkstra's algorithm.
 
