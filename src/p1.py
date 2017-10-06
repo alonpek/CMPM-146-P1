@@ -1,9 +1,17 @@
 from p1_support import load_level, show_level, save_level_costs
 from math import inf, sqrt
 from heapq import heappop, heappush
-
+import os
 
 def dijkstras_shortest_path(initial_position, destination, graph, adj):
+    print(initial_position)
+    print(destination)
+    print(graph)
+    print(adj)
+
+    dist = {}
+    prev = {}
+
     """ Searches for a minimal cost path through a graph using Dijkstra's algorithm.
 
     Args:
@@ -105,6 +113,8 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 
 if __name__ == '__main__':
     filename, src_waypoint, dst_waypoint = 'example.txt', 'a','e'
+    print(filename)
+    print(os.getcwd())
 
     # Use this function call to find the route between two waypoints.
     test_route(filename, src_waypoint, dst_waypoint)
