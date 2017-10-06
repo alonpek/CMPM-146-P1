@@ -7,7 +7,8 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     print(initial_position)
     print(destination)
     print(graph)
-    print(adj)
+    adj_list = adj(graph, initial_position)
+    print(adj_list)
 
     dist = {}
     prev = {}
@@ -59,7 +60,35 @@ def navigation_edges(level, cell):
              ((1,1), 1.4142135623730951),
              ... ]
     """
-    pass
+    adjacent = []
+    walls = level['walls']
+    waypoints = level['spaces']
+
+    test_cells = []
+    test_cells.append((cell[0]-1, cell[1]-1))
+    test_cells.append((cell[0], cell[1]-1))
+    test_cells.append((cell[0]+1, cell[1]-1))
+    test_cells.append((cell[0]-1, cell[1]))
+    test_cells.append((cell[0]+1, cell[1]))
+    test_cells.append((cell[0]-1, cell[0]+1))
+    test_cells.append((cell[0], cell[1]+1))
+    test_cells.append((cell[0]+1, cell[1]+1))
+
+    for test_cell in test_cells:
+        try:
+            if test_cell[0] < 1 or test_cell[1] < 1:
+                continue
+            if test_cell in walls:
+                continue
+            weight = waypoints[test_cell]
+            adjacent.append((test_cell, weight))
+
+        except KeyError:
+            adjacent.append((test_cell, 1))
+
+    return adjacent
+
+    #pass
 
 
 def test_route(filename, src_waypoint, dst_waypoint):
