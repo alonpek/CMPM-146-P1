@@ -22,31 +22,16 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     dist[initial_position] = 0
     heappush(queue, (0, initial_position))
 
-    while len(queue) != 0 or cur_cell != destination:
-        print(queue)
+    while len(queue) != 0:
         cur_cell = heappop(queue)[1] # pop cell that has the shortest distance
         if cur_cell == destination:
             break
-        print(cur_cell)
-        print(destination)
-        print(len(queue))
-        print(cur_cell)
         adj_list = adj(graph, cur_cell)
-        print(adj_list)
-        print(len(adj_list))
 
         for elem in adj_list:
-            print(elem)
-            #sys.exit(0)
             neighbor_cell = elem[0]
-            print(neighbor_cell)
-            if neighbor_cell[0] >= 50:
-                print('hello')
-            #if neighbor_cell[0] > 100:
-            #    sys.exit(0)
             neighbor_weight = elem[1]
-            print(neighbor_weight)
-            #sys.exit(0)
+
             # calculate Euclidean distances
             if (neighbor_cell[0] == cur_cell[0] and neighbor_cell[1] != cur_cell[1]) or \
                     (neighbor_cell[0] != cur_cell[0] and neighbor_cell[1] == cur_cell[1]):
@@ -54,16 +39,10 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
             else:
                 comb_weight = sqrt(dist[cur_cell] + neighbor_weight) / 2
 
-            print(comb_weight)
-
-
             if (neighbor_cell not in dist) or (comb_weight < dist[neighbor_cell]):
-                if neighbor_cell[0] >= 50:
-                    print (neighbor_cell)
                 dist[neighbor_cell] = comb_weight
                 prev[neighbor_cell] = cur_cell
                 heappush(queue, (comb_weight, neighbor_cell))
-                print(dist[neighbor_cell])
 
     out = []
     cur_cell = destination
@@ -74,11 +53,6 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         cur_cell = temp
 
     return out
-
-
-
-
-
 
     """ Searches for a minimal cost path through a graph using Dijkstra's algorithm.
 
@@ -154,8 +128,6 @@ def navigation_edges(level, cell):
             adjacent.append((test_cell, 1))
 
     return adjacent
-
-    #pass
 
 
 def test_route(filename, src_waypoint, dst_waypoint):
