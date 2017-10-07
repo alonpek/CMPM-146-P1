@@ -22,19 +22,28 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     dist[initial_position] = 0
     heappush(queue, (0, initial_position))
 
-    while len(queue) != 0:
+    while len(queue) != 0 or cur_cell != destination:
+        print(queue)
         cur_cell = heappop(queue)[1] # pop cell that has the shortest distance
+        if cur_cell == destination:
+            break
+        print(cur_cell)
+        print(destination)
+        print(len(queue))
         print(cur_cell)
         adj_list = adj(graph, cur_cell)
         print(adj_list)
         print(len(adj_list))
+
         for elem in adj_list:
             print(elem)
             #sys.exit(0)
             neighbor_cell = elem[0]
             print(neighbor_cell)
-            if neighbor_cell[0] > 100:
-                sys.exit(0)
+            if neighbor_cell[0] >= 50:
+                print('hello')
+            #if neighbor_cell[0] > 100:
+            #    sys.exit(0)
             neighbor_weight = elem[1]
             print(neighbor_weight)
             #sys.exit(0)
@@ -49,17 +58,22 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
 
 
             if (neighbor_cell not in dist) or (comb_weight < dist[neighbor_cell]):
+                if neighbor_cell[0] >= 50:
+                    print (neighbor_cell)
                 dist[neighbor_cell] = comb_weight
                 prev[neighbor_cell] = cur_cell
                 heappush(queue, (comb_weight, neighbor_cell))
                 print(dist[neighbor_cell])
 
-    print(dist)
-    print(prev)
-    sys.exit(0)
+    out = []
+    cur_cell = destination
+    out.append(cur_cell)
+    while (cur_cell is not initial_position):
+        temp = prev[cur_cell]
+        out.append(temp)
+        cur_cell = temp
 
-
-
+    return out
 
 
 
