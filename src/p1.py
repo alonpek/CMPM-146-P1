@@ -94,6 +94,7 @@ def navigation_edges(level, cell):
              ((1,1), 1.4142135623730951),
              ... ]
     """
+
     adjacent = []
     walls = level['walls']
     spaces = level['spaces']
@@ -109,9 +110,9 @@ def navigation_edges(level, cell):
     test_cells.append((cell[0]+1, cell[1]+1))
 
     for test_cell in test_cells:
-        if test_cell[0] < 0 or test_cell[1] < 0:
-            continue
         if test_cell in walls:
+            continue
+        if test_cell not in spaces:
             continue
         if (test_cell[0] == cell[0] and test_cell[1] != cell[1]) or \
                 (test_cell[0] != cell[0] and test_cell[1] == cell[1]):
@@ -173,7 +174,7 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 
 
 if __name__ == '__main__':
-    filename, src_waypoint, dst_waypoint = 'example.txt', 'a','e'
+    filename, src_waypoint, dst_waypoint = 'our_example.txt', 'a','e'
     print(filename)
     print(os.getcwd())
 
