@@ -6,54 +6,6 @@ from math import sqrt
 import sys
 
 def dijkstras_shortest_path(initial_position, destination, graph, adj):
-    print(initial_position)
-    print(destination)
-    print(graph)
-    adj_list = adj(graph, initial_position)
-    print(adj_list)
-
-    # “dist = {}” and “dist[state] = better_distance” dist from src to the node
-    # “prev = {}” and “prev[state2] = state1”
-
-    dist = {}
-    prev = {}
-    queue = []
-
-    dist[initial_position] = 0
-    heappush(queue, (0, initial_position))
-
-    while len(queue) != 0:
-        cur_cell = heappop(queue)[1] # pop cell that has the shortest distance
-        if cur_cell == destination:
-            break
-        adj_list = adj(graph, cur_cell)
-
-        for elem in adj_list:
-            neighbor_cell = elem[0]
-            neighbor_weight = elem[1]
-
-            # calculate Euclidean distances
-            if (neighbor_cell[0] == cur_cell[0] and neighbor_cell[1] != cur_cell[1]) or \
-                    (neighbor_cell[0] != cur_cell[0] and neighbor_cell[1] == cur_cell[1]):
-                comb_weight = (dist[cur_cell] + neighbor_weight) / 2
-            else:
-                comb_weight = sqrt(dist[cur_cell] + neighbor_weight) / 2
-
-            if (neighbor_cell not in dist) or (comb_weight < dist[neighbor_cell]):
-                dist[neighbor_cell] = comb_weight
-                prev[neighbor_cell] = cur_cell
-                heappush(queue, (comb_weight, neighbor_cell))
-
-    out = []
-    cur_cell = destination
-    out.append(cur_cell)
-    while (cur_cell is not initial_position):
-        temp = prev[cur_cell]
-        out.append(temp)
-        cur_cell = temp
-
-    return out
-
     """ Searches for a minimal cost path through a graph using Dijkstra's algorithm.
 
     Args:
@@ -67,7 +19,31 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         Otherwise, return None.
 
     """
-    pass
+    dist = {}
+    prev = {}
+    queue = []
+
+    dist[initial_position] = 0
+    heappush(queue, (0, initial_position))
+
+    while len(queue) != 0:
+        current_cost, current_cell = heappop(queue)
+        if current_cell == destination:
+            # construct the path
+            path = []
+            while current_cell in prev:
+                path.insert(0, current_cell)
+                current_cell = prev[current_cell]
+            path.insert(0, initial_position)
+            return path
+        for neighbor_cell, neighbor_cost in adj(graph, current_cell):
+            new_dist = neighbor_cost + dist[current_cell]
+            if (neighbor_cell not in dist) or (new_dist < dist[neighbor_cell]):
+                dist[neighbor_cell] = new_dist
+                prev[neighbor_cell] = current_cell
+                heappush(queue, (new_dist, neighbor_cell))
+
+    return None
 
 
 def dijkstras_shortest_path_to_all(initial_position, graph, adj):
@@ -81,7 +57,24 @@ def dijkstras_shortest_path_to_all(initial_position, graph, adj):
     Returns:
         A dictionary, mapping destination cells to the cost of a path from the initial_position.
     """
-    pass
+    dist = {}
+    prev = {}
+    queue = []
+
+    dist[initial_position] = 0
+    heappush(queue, (0, initial_position))
+
+    while len(queue) != 0:
+        current_cost, current_cell = heappop(queue)
+        for neighbor_cell, neighbor_cost in adj(graph, current_cell):
+            new_dist = neighbor_cost + dist[current_cell]
+            if (neighbor_cell not in dist) or (new_dist < dist[neighbor_cell]):
+                dist[neighbor_cell] = new_dist
+                prev[neighbor_cell] = current_cell
+                heappush(queue, (new_dist, neighbor_cell))
+
+    return dist
+
 
 
 def navigation_edges(level, cell):
@@ -103,7 +96,7 @@ def navigation_edges(level, cell):
     """
     adjacent = []
     walls = level['walls']
-    waypoints = level['spaces']
+    spaces = level['spaces']
 
     test_cells = []
     test_cells.append((cell[0]-1, cell[1]-1))
@@ -111,21 +104,21 @@ def navigation_edges(level, cell):
     test_cells.append((cell[0]+1, cell[1]-1))
     test_cells.append((cell[0]-1, cell[1]))
     test_cells.append((cell[0]+1, cell[1]))
-    test_cells.append((cell[0]-1, cell[0]+1))
+    test_cells.append((cell[0]-1, cell[1]+1))
     test_cells.append((cell[0], cell[1]+1))
     test_cells.append((cell[0]+1, cell[1]+1))
 
     for test_cell in test_cells:
-        try:
-            if test_cell[0] < 1 or test_cell[1] < 1:
-                continue
-            if test_cell in walls:
-                continue
-            weight = waypoints[test_cell]
-            adjacent.append((test_cell, weight))
-
-        except KeyError:
-            adjacent.append((test_cell, 1))
+        if test_cell[0] < 0 or test_cell[1] < 0:
+            continue
+        if test_cell in walls:
+            continue
+        if (test_cell[0] == cell[0] and test_cell[1] != cell[1]) or \
+                (test_cell[0] != cell[0] and test_cell[1] == cell[1]):
+            weight = (spaces[cell] + spaces[test_cell]) / 2
+        else:
+            weight = (spaces[cell] + spaces[test_cell]) * sqrt(2) / 2
+        adjacent.append((test_cell, weight))
 
     return adjacent
 
